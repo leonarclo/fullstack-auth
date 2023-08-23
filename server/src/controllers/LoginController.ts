@@ -21,7 +21,6 @@ export class LoginController {
       if (cookie) {
         res.clearCookie("token_session", { httpOnly: true });
       }
-
       const comparePassword = await bcrypt.compare(password, user.password);
 
       if (!comparePassword) {
