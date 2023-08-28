@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { RegisterController } from "./controllers/RegisterController";
 import { LoginController } from "./controllers/LoginController";
-import { authMiddleware } from "./middleware/authMiddleware";
+import { authMiddleware } from "./middlewares/authMiddleware";
 import { UserDataController } from "./controllers/UserDataController";
 import { LogoutController } from "./controllers/LogoutController";
 import { PayerClientController } from "./controllers/PayerClientController";
@@ -9,7 +9,7 @@ import { ForgetPasswordController } from "./controllers/ForgetPasswordController
 import { ResetPasswordController } from "./controllers/ResetPasswordController";
 import { VerifyEmailController } from "./controllers/VerifyEmailController";
 import { CreateAccountController } from "./controllers/CreateAccountController";
-import { adminMiddleware } from "./middleware/adminMiddleware";
+import { adminMiddleware } from "./middlewares/adminMiddleware";
 
 const routes = Router();
 

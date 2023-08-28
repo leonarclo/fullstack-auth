@@ -33,7 +33,7 @@ export const sendEmail = async ({ email, type, userId }: ISendEmail) => {
       port: 587,
       auth: {
         user: process.env.SMTP_EMAIL,
-        pass: process.env.SMTP_EMAIL_PASS,
+        pass: process.env.SMTP_PASS,
       },
     });
 

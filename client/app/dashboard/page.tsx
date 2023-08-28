@@ -1,51 +1,12 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import React, { useContext, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
-
-interface IUserData {
-  name: string;
-  email: string;
-  image?: string;
-  token: string;
-  account_type?: string | null;
-  account_access_token?: string | null;
-  account_expires_at?: Date | null;
-}
+import { useUserContext } from "@/context/userContext";
 
 function Dashboard() {
-  const router = useRouter();
-  const [loading, setLoading] = useState(true);
-  const [userData, setUserData] = useState<IUserData | null>(null);
+  const { userData, loading } = useUserContext();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const response = await fetch("http://localhost:3001/user-data", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        });
-
-        const data = await response.json();
-        if (response.ok) {
-          setUserData(data);
-        } else {
-          alert(data.message);
-          router.push("/login");
-        }
-      } catch (error: any) {
-        console.error("Error checking authentication:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    checkAuth();
-  }, []);
 
   const handleCategorySelect = (categoryTitle: string) => {
     setSelectedCategory(categoryTitle);
@@ -58,6 +19,9 @@ function Dashboard() {
     { id: 3, title: "sitcom" },
   ];
 
+  if (!userData || loading) {
+    return <p>Loading...</p>;
+  }
   return (
     <div className="h-screen flex flex-col">
       <Navbar name={userData?.name} />

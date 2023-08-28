@@ -1,3 +1,4 @@
+import { UserContextProvider } from "@/context/userContext";
 import Link from "next/link";
 
 export default function Home() {
