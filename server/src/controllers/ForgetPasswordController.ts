@@ -9,6 +9,7 @@ export class ForgetPasswordController {
   async handle(req: Request, res: Response) {
     try {
       const { email } = req.body;
+
       const user = await userRepository.findOneBy({ email });
 
       if (!user) {
@@ -31,6 +32,7 @@ export class ForgetPasswordController {
       }
 
       const userId = user.id;
+
       sendEmail({ email, type: TokenType.RESET_PASSWORD, userId });
 
       return res.status(200).json({
