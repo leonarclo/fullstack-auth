@@ -3,6 +3,8 @@ import nodemailer from "nodemailer";
 import { userRepository } from "../repositories/userRespository";
 import { tokenRepository } from "../repositories/tokenRepository";
 import { TokenType } from "../entities/Token";
+import { accountRepository } from "../repositories/accountReposiroty";
+import { Role } from "../entities/Account";
 
 interface ISendEmail {
   email: string;
@@ -15,6 +17,14 @@ export const sendEmail = async ({ email, type, userId }: ISendEmail) => {
     const hashedToken = await bcrypt.hash(userId, 8);
 
     const user = await userRepository.findOneBy({ email });
+
+    const isAdmin = await accountRepository.findOne({
+      where: { role: Role.ADMIN },
+    });
+
+    if (isAdmin) {
+      return null;
+    }
 
     const userToken = {
       identifier: userId,
@@ -38,26 +48,26 @@ export const sendEmail = async ({ email, type, userId }: ISendEmail) => {
     });
 
     // ======================================
-    let subject, path, todo;
+    let subject, path, body;
     if (type === TokenType.VERIFY_EMAIL) {
       subject = "Verificação de Email ✔";
       path = "verify-email";
-      todo = "verificar seu email.";
+      body = "verificar seu email.";
     } else if (type === TokenType.RESET_PASSWORD) {
       subject = "Redefinição de Senha 🔑";
       path = "password/reset";
-      todo = "redefinir sua senha.";
+      body = "redefinir sua senha.";
     } else {
       subject = "Link de Acesso 🚀";
-      path = "access-link";
-      todo = "ativar seu acesso.";
+      path = "access-token";
+      body = "ativar seu acesso.";
     }
     // ======================================
     const mailOptions = {
       from: process.env.SMTP_EMAIL,
       to: email,
       subject: subject,
-      html: `<p><a href="${process.env.BASE_URL}/${path}?token=${hashedToken}">Clique aqui</a> para ${todo}</p>`,
+      html: `<p><a href="${process.env.BASE_URL}/${path}?token=${hashedToken}">Clique aqui</a> para ${body}</p>`,
     };
 
     const mailResponse = transporter.sendMail(mailOptions);

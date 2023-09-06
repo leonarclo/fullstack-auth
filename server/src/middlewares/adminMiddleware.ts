@@ -2,7 +2,7 @@ import { userRepository } from "../repositories/userRespository";
 import jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import { accountRepository } from "../repositories/accountReposiroty";
-import { TypeAccount } from "../entities/Account";
+import { Role } from "../entities/Account";
 import { getToken } from "../utils/getToken";
 
 export const adminMiddleware = async (
@@ -28,7 +28,7 @@ export const adminMiddleware = async (
     const admin = await accountRepository.findOne({
       where: {
         userId: user.id,
-        account_type: TypeAccount.ADMIN,
+        role: Role.ADMIN,
       },
     });
 

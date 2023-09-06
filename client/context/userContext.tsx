@@ -13,7 +13,7 @@ interface IUserData {
   email: string;
   image?: string;
   token: string;
-  account_type?: string | null;
+  role?: string | null;
   account_access_token?: string | null;
   account_expires_at?: Date | null;
 }

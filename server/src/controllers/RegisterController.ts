@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import { sendEmail } from "../utils/mailSender";
 import { TokenType } from "../entities/Token";
 import { accountRepository } from "../repositories/accountReposiroty";
-import { TypeAccount } from "../entities/Account";
+import { Role } from "../entities/Account";
 import { payerClientRepository } from "../repositories/payerClientRepository";
 
 export class RegisterController {
@@ -28,36 +28,24 @@ export class RegisterController {
       });
       await userRepository.save(newUser);
 
-      const newAccount = accountRepository.create({
-        userId: newUser.id,
-        email: newUser.email,
-        account_type: TypeAccount.FREE,
-        expires_at: new Date(new Date().getTime() + 31557600000),
-      });
-
-      await accountRepository.save(newAccount);
-
       const isClient = await payerClientRepository.findOne({
         where: {
           email: newUser.email,
         },
       });
 
-      if (isClient) {
-        await accountRepository.update(
-          { userId: newUser.id },
-          { email: newUser.email, account_type: TypeAccount.PAID }
-        );
+      const newAccount = accountRepository.create({
+        userId: newUser.id,
+        email: newUser.email,
+        role: Role.FREE,
+      });
 
-        return res.status(201).json({
-          message: "Email cliente! Acesso disponível!",
-        });
-      }
+      await accountRepository.save(newAccount);
 
       if (newUser.email === "admin@gmail.com") {
         await accountRepository.update(
           { userId: newUser.id },
-          { account_type: TypeAccount.ADMIN, email: newUser.email }
+          { role: Role.ADMIN, email: newUser.email }
         );
 
         await userRepository.update(
@@ -70,12 +58,22 @@ export class RegisterController {
         });
       }
 
+      if (isClient) {
+        const userId = newUser.id;
+        await sendEmail({ email, type: TokenType.ACCESS_TOKEN, userId });
+
+        return res.status(201).json({
+          message:
+            "Usuário cliente! Em instantes você receberá um email com o seu link de acesso!",
+        });
+      }
+
       const userId = newUser.id;
       await sendEmail({ email, type: TokenType.VERIFY_EMAIL, userId });
 
       return res.status(201).json({
-        message: "Usuário criado com sucesso!",
-        user: { id: newUser.id, name: newUser.name, email: newUser.email },
+        message:
+          "Usuário criado com sucesso! Se você já é nosso cliente, entre em contato para receber seu link de acesso.",
       });
     } catch (error: any) {
       return res.status(500).json(error);

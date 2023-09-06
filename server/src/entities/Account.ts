@@ -5,12 +5,11 @@ import {
   PrimaryGeneratedColumn,
   JoinColumn,
   OneToOne,
-  PrimaryColumn,
   Unique,
 } from "typeorm";
 import { User } from "./User";
 
-export enum TypeAccount {
+export enum Role {
   ADMIN = "ADMIN",
   FREE = "FREE",
   PAID = "PAID",
@@ -28,14 +27,14 @@ export class Account {
   @Column()
   email: string;
 
-  @Column({ type: "enum", enum: TypeAccount, default: TypeAccount.FREE })
-  account_type: TypeAccount;
+  @Column({ type: "enum", enum: Role, default: Role.FREE })
+  role: Role;
 
   @Column({ type: "text", nullable: true })
   access_token: string | null;
 
   @Column({ type: "timestamp", nullable: true })
-  expires_at: Date | null;
+  access_token_expires_at: Date | null;
 
   @CreateDateColumn({ type: "timestamp" })
   created_at: Date;

@@ -30,14 +30,18 @@ export const authMiddleware = async (
       },
     });
 
+    if (!account) {
+      return res.status(401).json({ message: "Não autorizado!" });
+    }
+
     const userData = {
       name: user.name,
       email: user.email,
       image: user.image,
       token: token,
-      account_type: account?.account_type,
-      account_access_token: account?.access_token,
-      account_expires_at: account?.expires_at,
+      role: account.role,
+      account_access_token: account.access_token,
+      account_expires_at: account.access_token_expires_at,
     };
 
     req.userData = userData;
