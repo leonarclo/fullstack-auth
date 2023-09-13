@@ -17,7 +17,6 @@ function Navbar() {
       });
       const data = await response.json();
       if (response.ok) {
-        alert(data.message);
         router.push("/login");
       }
     } catch (error: any) {

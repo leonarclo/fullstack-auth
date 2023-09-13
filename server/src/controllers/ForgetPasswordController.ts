@@ -9,7 +9,8 @@ export class ForgetPasswordController {
   async handle(req: Request, res: Response) {
     try {
       const { email } = req.body;
-      const user = await userRepository.findOne({ where: { email } });
+
+      const user = await userRepository.findOneBy({ email });
 
       if (!user) {
         return res.status(404).json({ message: "Email não encontrado!" });

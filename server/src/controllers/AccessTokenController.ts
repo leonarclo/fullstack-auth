@@ -9,8 +9,6 @@ import { Role } from "../entities/Account";
 export class AccessTokenController {
   async handle(req: Request, res: Response) {
     try {
-      console.log(req.body);
-
       const { token } = req.body;
 
       const userToken = await tokenRepository.findOne({

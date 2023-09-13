@@ -22,9 +22,9 @@ function AcessToken() {
             "Content-Type": "application/json",
           },
         });
-
         const res = await response.json();
         if (response.ok) {
+
           alert(res.message);
           router.push("/login");
         }
@@ -35,6 +35,7 @@ function AcessToken() {
     };
     getAccessToken();
   }, []);
+
 
   return (
     <section className="bg-black h-screen w-sreen">

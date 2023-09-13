@@ -12,6 +12,7 @@ import { CreateAccountController } from "./controllers/CreateAccountController";
 import { adminMiddleware } from "./middlewares/adminMiddleware";
 import { AccessTokenController } from "./controllers/AccessTokenController";
 
+import { AccessTokenController } from "./controllers/AccessTokenController";
 const routes = Router();
 
 routes.post(
