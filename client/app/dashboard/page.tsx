@@ -3,8 +3,10 @@ import React, { useContext, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
 import { useUserContext } from "@/context/userContext";
+import { useRouter } from "next/navigation";
 
 function Dashboard() {
+  const router = useRouter();
   const { userData, loading } = useUserContext();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
@@ -19,12 +21,22 @@ function Dashboard() {
     { id: 3, title: "sitcom" },
   ];
 
-  if (!userData || loading) {
-    return <p>Loading...</p>;
+  if (loading) {
+    return (
+      <div>
+        <p>Carregando...</p>
+      </div>
+    );
   }
+
+  if (!userData) {
+    router.push("/login");
+    return null;
+  }
+
   return (
     <div className="h-screen flex flex-col">
-      <Navbar name={userData?.name} />
+      <Navbar />
       <section className="bg-black w-screen flex-1">
         <div className="container m-auto p-10 flex items-center justify-center h-full">
           <div className="border border-white rounded text-white flex flex-col gap-10 p-10">
