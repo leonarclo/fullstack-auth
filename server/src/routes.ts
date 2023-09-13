@@ -10,6 +10,7 @@ import { ResetPasswordController } from "./controllers/ResetPasswordController";
 import { VerifyEmailController } from "./controllers/VerifyEmailController";
 import { CreateAccountController } from "./controllers/CreateAccountController";
 import { adminMiddleware } from "./middlewares/adminMiddleware";
+import { AccessTokenController } from "./controllers/AccessTokenController";
 
 import { AccessTokenController } from "./controllers/AccessTokenController";
 const routes = Router();
@@ -28,4 +29,5 @@ routes.post("/reset-password", new ResetPasswordController().handle);
 routes.get("/user-data", authMiddleware, new UserDataController().handle);
 routes.post("/verify-email", new VerifyEmailController().handle);
 routes.post("/access-token", new AccessTokenController().handle);
+
 export default routes;

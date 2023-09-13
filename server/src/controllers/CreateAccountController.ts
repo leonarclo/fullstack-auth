@@ -9,7 +9,6 @@ import { TokenType } from "../entities/Token";
 export class CreateAccountController {
   async handle(req: Request, res: Response) {
     try {
-      console.log(req.body);
       const { name, email } = req.body;
 
       const account = await accountRepository.findOneBy({ email });

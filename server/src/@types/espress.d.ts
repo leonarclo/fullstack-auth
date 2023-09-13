@@ -1,5 +1,5 @@
 import { Request } from "express";
-import { TypeAccount } from "../entities/Account";
+import { Role } from "../entities/Account";
 
 declare global {
   namespace Express {
@@ -9,7 +9,7 @@ declare global {
         email: string;
         image: string;
         token: string;
-        account_type?: TypeAccount | null;
+        role?: Role | null;
         account_access_token?: string | null;
         account_expires_at?: Date | null;
       };

@@ -1,15 +1,17 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
-function AccessToken() {
+function AcessToken() {
   const router = useRouter();
-  const [token, setToken] = useState("");
+  const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
     const urlToken = window.location.search.split("=")[1];
-    setToken(urlToken || "");
+    if (urlToken) {
+      setToken(urlToken);
+    }
 
     const getAccessToken = async () => {
       try {
@@ -21,16 +23,19 @@ function AccessToken() {
           },
         });
         const res = await response.json();
-        if (response) {
+        if (response.ok) {
+
           alert(res.message);
           router.push("/login");
         }
       } catch (error: any) {
-        console.log(error);
+        alert(error);
+        router.push("/login");
       }
     };
     getAccessToken();
-  }, [router, token]);
+  }, []);
+
 
   return (
     <section className="bg-black h-screen w-sreen">
@@ -48,4 +53,4 @@ function AccessToken() {
   );
 }
 
-export default AccessToken;
+export default AcessToken;
