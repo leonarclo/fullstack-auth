@@ -1,6 +1,7 @@
 "use client";
+
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 type Inputs = {
@@ -10,7 +11,6 @@ type Inputs = {
 
 function CreateAccount() {
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
 
   const {
     register,
@@ -65,6 +65,7 @@ function CreateAccount() {
               />
               {errors.email && <p>{errors.email.message}</p>}
             </div>
+            <Link href={"/login"}>Go to Login</Link>
             <button type="submit" className="p-2 border border-white rounded">
               Submit
             </button>

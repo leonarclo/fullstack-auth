@@ -41,7 +41,7 @@ function Forget() {
     <section className="bg-black h-screen w-sreen">
       <div className="container m-auto p-10 flex items-center justify-center h-full">
         <div className="border border-white rounded text-white flex flex-col gap-10 p-10">
-          <h1 className="text-center text-xl">Reset password</h1>
+          <h1 className="text-center text-xl">Redefinir Senha</h1>
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col gap-6"
@@ -49,17 +49,17 @@ function Forget() {
             <div className="flex flex-col">
               <label>Email</label>
               <input
-                className="bg-black border border-white rounded"
-                {...register("email", { required: "Email is required" })}
+                className="bg-black border border-white rounded p-2"
+                {...register("email", { required: "O email é obrigatório." })}
               />
               {errors.email && <p>{errors.email.message}</p>}
             </div>
             <button type="submit" className="p-2 border border-white rounded">
-              Submit
+              Enviar
             </button>
           </form>
           <div className="flex flex-col gap-4">
-            <Link href={"/login"}>Go to Login</Link>
+            <Link href={"/login"}>Ir para Login</Link>
           </div>
         </div>
       </div>

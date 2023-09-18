@@ -37,10 +37,10 @@ function VerifyEmail() {
       <div className="container m-auto p-10 flex items-center justify-center h-full">
         <div className="border border-white rounded text-white flex flex-col gap-10 p-10">
           <h1 className="text-center text-xl">
-            {token ? "Email verificado com sucesso!" : "Loading..."}
+            {token ? "Email verificado com sucesso!" : "Carregando..."}
           </h1>
           <div className="flex flex-col gap-4">
-            <Link href={"/login"}>Go to Login</Link>
+            <Link href={"/login"}>Ir para Login</Link>
           </div>
         </div>
       </div>
