@@ -31,7 +31,7 @@ export class AccessTokenController {
         { id: userToken.identifier },
         {
           role: Role.PAID,
-          access_token_expires_at: new Date(new Date().getTime() + 31557600), //1 ano
+          access_token_expires_at: new Date(new Date().getTime() + 31557600000), //1 ano
         }
       );
 
@@ -47,7 +47,7 @@ export class AccessTokenController {
         });
       }
 
-      if (user.verified_email === undefined) {
+      if (user && !user.verified_email) {
         await userRepository.update(
           { id: userToken.identifier },
           { verified_email: new Date(Date.now()) }

@@ -19,7 +19,7 @@ export const sendEmail = async ({ email, type, userId }: ISendEmail) => {
     const user = await userRepository.findOneBy({ email });
 
     const isAdmin = await accountRepository.findOne({
-      where: { role: Role.ADMIN },
+      where: { email, role: Role.ADMIN },
     });
 
     if (isAdmin) {

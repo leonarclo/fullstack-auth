@@ -31,9 +31,9 @@ function CreateAccount() {
       const res = await response.json();
       if (response.ok) {
         alert(res.message);
+        router.push("/login");
       } else {
         alert(res.message);
-        router.push("/login");
       }
     } catch (error: any) {
       console.log(error);
@@ -53,7 +53,7 @@ function CreateAccount() {
               <label>Nome</label>
               <input
                 className="bg-black border border-white rounded"
-                {...register("name", { required: "Name is required" })}
+                {...register("name", { required: "O nome é obrigatório." })}
               />
               {errors.name && <p>{errors.name.message}</p>}
             </div>
@@ -61,7 +61,7 @@ function CreateAccount() {
               <label>Email</label>
               <input
                 className="bg-black border border-white rounded"
-                {...register("email", { required: "Email is required" })}
+                {...register("email", { required: "O email é obrigatório." })}
               />
               {errors.email && <p>{errors.email.message}</p>}
             </div>

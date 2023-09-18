@@ -41,7 +41,7 @@ export class CreateAccountController {
         });
       }
 
-      const userId = account.id;
+      const userId = account.userId;
       await sendEmail({ email, type: TokenType.ACCESS_TOKEN, userId });
       return res.status(201).json({
         success: true,

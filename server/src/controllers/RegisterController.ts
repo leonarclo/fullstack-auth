@@ -42,22 +42,6 @@ export class RegisterController {
 
       await accountRepository.save(newAccount);
 
-      if (newUser.email === "admin@gmail.com") {
-        await accountRepository.update(
-          { userId: newUser.id },
-          { role: Role.ADMIN, email: newUser.email }
-        );
-
-        await userRepository.update(
-          { id: newUser.id },
-          { verified_email: new Date(new Date().getTime()) }
-        );
-
-        return res.status(201).json({
-          message: "Email ADMIN criado com sucesso!",
-        });
-      }
-
       if (isClient) {
         const userId = newUser.id;
         await sendEmail({ email, type: TokenType.ACCESS_TOKEN, userId });
