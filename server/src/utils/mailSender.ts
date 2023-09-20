@@ -29,7 +29,7 @@ export const sendEmail = async ({ email, type, userId }: ISendEmail) => {
     const userToken = {
       identifier: userId,
       token: hashedToken,
-      expires_at: new Date(new Date().getTime() + 1800000), //30min
+      expires_at: new Date(new Date().getTime() + 3600000), //1hora
       token_type: type,
     };
 

@@ -1,4 +1,5 @@
 "use client";
+import Loading from "@/components/Loading";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -11,6 +12,7 @@ type Inputs = {
 };
 
 function Register() {
+  const [loading, setLoading] = useState<boolean | null>(null);
   const router = useRouter();
   const {
     register,
@@ -20,6 +22,7 @@ function Register() {
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
+      setLoading(true);
       const response = await fetch("http://localhost:3001/register", {
         method: "POST",
         body: JSON.stringify(data),
@@ -38,8 +41,14 @@ function Register() {
       }
     } catch (error: any) {
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <section className="bg-black h-screen w-sreen">

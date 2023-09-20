@@ -27,6 +27,9 @@ export class LoginController {
         return res.status(400).json({ message: "Senha incorreta!" });
       }
 
+      const currentTimestamp = new Date().getTime();
+      const twentyFourHoursInMillis = 24 * 60 * 60 * 1000;
+
       const tokenExist = await tokenRepository.findOne({
         where: {
           identifier: user.id,
@@ -35,10 +38,19 @@ export class LoginController {
         },
       });
 
-      if (user.verified_email == undefined && !tokenExist) {
+      if (
+        user.verified_email == undefined &&
+        (!tokenExist ||
+          tokenExist?.expires_at <=
+            new Date(currentTimestamp - twentyFourHoursInMillis))
+      ) {
         const userId = user.id;
         await sendEmail({ email, type: TokenType.VERIFY_EMAIL, userId });
+        return res
+          .status(200)
+          .json({ message: "Logado com sucesso!", success: true });
       }
+      console.log(new Date(currentTimestamp - twentyFourHoursInMillis));
 
       const userToken = {
         id: user.id,
@@ -54,6 +66,7 @@ export class LoginController {
       return res.status(200).json({
         message: "Logado com sucesso!",
         user: { id: user.id, name: user.name, email: user.email, token },
+        success: true,
       });
     } catch (error: any) {
       return res.status(500).json({ message: error });

@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 
-interface IUserData {
+export interface IUserData {
   name: string;
   email: string;
   image?: string;
@@ -51,7 +51,6 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
       if (response.ok) {
         setUserData(data);
       } else {
-        alert(data.message);
         router.push("/login");
       }
     } catch (error: any) {

@@ -1,10 +1,10 @@
-
 "use client";
 import React, { useContext, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
 import { useUserContext } from "@/context/userContext";
 import { useRouter } from "next/navigation";
+import Loading from "@/components/Loading";
 
 function Dashboard() {
   const router = useRouter();
@@ -23,16 +23,11 @@ function Dashboard() {
   ];
 
   if (loading) {
-    return (
-      <div>
-        <p>Carregando...</p>
-      </div>
-    );
+    return <Loading />;
   }
 
   if (!userData) {
     router.push("/login");
-    return null;
   }
 
   return (

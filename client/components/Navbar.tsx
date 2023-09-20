@@ -41,6 +41,14 @@ function Navbar() {
     <nav className="bg-black w-screen py-4 mb-1">
       <div className="container mx-auto flex items-center justify-between">
         <h1 className="text-slate-50">Bem-Vindo(a), {userData?.name}!</h1>
+        {userData?.role === "ADMIN" && (
+          <button
+            className="text-slate-50 py-2 px-6 border rounded"
+            onClick={() => router.push("/create-account")}
+          >
+            Criar Conta
+          </button>
+        )}
         <button
           className="text-slate-50 py-2 px-6 border rounded"
           onClick={logOut}
