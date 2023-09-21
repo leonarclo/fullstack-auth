@@ -29,7 +29,7 @@ function Navbar() {
     return <Loading />;
   }
 
-  if (!userData) {
+  if (!userData && !loading) {
     router.push("/login");
     return null;
   }
