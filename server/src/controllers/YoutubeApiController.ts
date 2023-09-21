@@ -14,20 +14,19 @@ export class YoutubeApiController {
       const playlistsResponse = await youtube.playlists.list({
         part: ["snippet"],
         channelId: channelId,
+        maxResults: 10,
       });
 
-      const playlists = playlistsResponse.data.items;
+      const playlists = playlistsResponse.data.items as any[];
 
       if (playlists && playlists.length > 0) {
-        // Lista as informações de cada playlist
-        playlists.forEach((playlist) => {
-          console.log("Título da Playlist: " + playlist.snippet?.title);
-          console.log(
-            "Descrição da Playlist: " + playlist.snippet?.description
-          );
-          console.log("ID da Playlist: " + playlist.id);
-          console.log("---");
-        });
+        const simplifiedPlaylists = playlists?.map((playlist) => ({
+          title: playlist.snippet?.title,
+          id: playlist.id,
+          thumbnail: playlist.snippet?.thumbnails?.default?.url,
+        }));
+
+        return res.status(200).json({ playlists: simplifiedPlaylists });
       } else {
         console.log("Nenhuma playlist encontrada no canal.");
       }
