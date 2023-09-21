@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
 import { useUserContext } from "@/context/userContext";
@@ -17,17 +17,18 @@ function Dashboard() {
   };
 
   const categories = [
-    { id: 1, title: "animes" },
-    { id: 2, title: "memes" },
-    { id: 3, title: "sitcom" },
+    { id: 1, title: "Curso 1" },
+    { id: 2, title: "Curso 2" },
+    { id: 3, title: "Curso 3" },
   ];
 
   if (loading) {
     return <Loading />;
   }
 
-  if (!userData) {
+  if (!userData && !loading) {
     router.push("/login");
+    return null;
   }
 
   return (

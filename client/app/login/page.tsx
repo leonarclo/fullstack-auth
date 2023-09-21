@@ -27,6 +27,7 @@ function Login() {
       });
       const res = await response.json();
       if (response.ok) {
+        alert(res.message);
         router.push("/dashboard");
       } else {
         alert(res.message);

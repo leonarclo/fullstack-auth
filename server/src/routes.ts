@@ -11,6 +11,7 @@ import { VerifyEmailController } from "./controllers/VerifyEmailController";
 import { CreateAccountController } from "./controllers/CreateAccountController";
 import { adminMiddleware } from "./middlewares/adminMiddleware";
 import { AccessTokenController } from "./controllers/AccessTokenController";
+import { YoutubeApiController } from "./controllers/YoutubeApiController";
 
 const routes = Router();
 
@@ -22,6 +23,7 @@ routes.post(
 routes.post("/forget-password", new ForgetPasswordController().handle);
 routes.post("/login", new LoginController().handle);
 routes.get("/logout", new LogoutController().handle);
+routes.get("/api/youtube", new YoutubeApiController().handle);
 routes.post("/payer-client", new PayerClientController().handle);
 routes.post("/register", new RegisterController().handle);
 routes.post("/reset-password", new ResetPasswordController().handle);

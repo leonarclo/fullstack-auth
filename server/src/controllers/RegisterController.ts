@@ -49,6 +49,7 @@ export class RegisterController {
         return res.status(201).json({
           message:
             "Usuário cliente! Em instantes você receberá um email com o seu link de acesso!",
+          success: true,
         });
       }
 
@@ -58,6 +59,7 @@ export class RegisterController {
       return res.status(201).json({
         message:
           "Usuário criado com sucesso! Se você já é nosso cliente, entre em contato para receber seu link de acesso.",
+        success: true,
       });
     } catch (error: any) {
       return res.status(500).json(error);
