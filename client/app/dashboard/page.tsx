@@ -13,21 +13,21 @@ function Dashboard() {
 
   const handleCategorySelect = (categoryTitle: string) => {
     setSelectedCategory(categoryTitle);
-    console.log(categoryTitle);
   };
 
   const categories = [
-    { id: 1, title: "animes" },
-    { id: 2, title: "memes" },
-    { id: 3, title: "sitcom" },
+    { id: 1, title: "Curso 1" },
+    { id: 2, title: "Curso 2" },
+    { id: 3, title: "Curso 3" },
   ];
 
   if (loading) {
     return <Loading />;
   }
 
-  if (!userData) {
+  if (!userData && !loading) {
     router.push("/login");
+    return null;
   }
 
   return (
@@ -39,7 +39,10 @@ function Dashboard() {
             <div className="container m-auto flex flex-row items-center flex-wrap gap-6">
               {categories.map((category) => (
                 <div key={category.id} className="text-black">
-                  <Link href={"/course"} onClick={() => handleCategorySelect}>
+                  <Link
+                    href={"/course"}
+                    onClick={() => handleCategorySelect(category.title)}
+                  >
                     <div className="bg-white rounded p-10 m-10 w-100 h-100">
                       <h2>{category.title}</h2>
                     </div>

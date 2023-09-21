@@ -1,6 +1,7 @@
 import { useUserContext } from "@/context/userContext";
 import { useRouter } from "next/navigation";
 import React from "react";
+import Loading from "./Loading";
 
 function Navbar() {
   const { userData, loading } = useUserContext();
@@ -25,14 +26,10 @@ function Navbar() {
   };
 
   if (loading) {
-    return (
-      <div>
-        <p>Carregando...</p>
-      </div>
-    );
+    return <Loading />;
   }
 
-  if (!userData) {
+  if (!userData && !loading) {
     router.push("/login");
     return null;
   }

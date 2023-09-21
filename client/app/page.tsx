@@ -44,7 +44,7 @@ export default function Home() {
     router.push("/dashboard");
   }
 
-  if (!userData) {
+  if (!userData && !loading) {
     router.push("/login");
   }
 }
