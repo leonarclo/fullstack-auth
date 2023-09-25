@@ -1,9 +1,12 @@
-import { UserContextProvider } from "@/context/userContext";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-roboto",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,9 +20,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-br">
-      <body className={inter.className}>
-        <UserContextProvider>{children}</UserContextProvider>
-      </body>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }

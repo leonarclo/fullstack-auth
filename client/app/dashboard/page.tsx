@@ -12,6 +12,11 @@ function Dashboard() {
   const router = useRouter();
   const { loading, userData } = useUserContext();
   const { loadingPlaylist, playlists } = useYoutubeApiContext();
+  const [playlistTitle, setPlaylistTitle] = useState<string | null>(null);
+
+  const handlePlaylistTitle = (title: string) => {
+    setPlaylistTitle(title);
+  };
 
   if (loading || loadingPlaylist) {
     return <Loading />;
@@ -28,17 +33,22 @@ function Dashboard() {
       <section className="bg-black w-screen flex-1">
         <div className="container m-auto p-10 flex items-center justify-center h-full">
           <div className="border border-white rounded text-white flex flex-col gap-10 p-10">
-            <div className="container m-auto flex flex-row items-center flex-wrap gap-6 justify-center">
+            <div className="container m-auto flex flex-row items-center flex-wrap gap-20 justify-center">
               {playlists?.map((playlist: any) => (
                 <div key={playlist.id} className="text-black">
-                  <Link href={"/course"}>
-                    <div className="bg-white rounded p-10 m-10 w-[280px] text-center">
-                      <h2>{playlist.title}</h2>
+                  <Link
+                    href={"/course"}
+                    onClick={() => handlePlaylistTitle(playlist.title)}
+                  >
+                    <h2 className="text-white text-center mb-4">
+                      {playlist.title}
+                    </h2>
+                    <div className="w-[180px] h-[120px] relative m-auto">
                       <Image
                         src={playlist.thumbnail}
                         alt=""
-                        width={210}
-                        height={115}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       />
                     </div>
                   </Link>

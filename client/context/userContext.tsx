@@ -37,31 +37,31 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
   const [userData, setUserData] = useState<IUserData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const checkAuth = async () => {
-    try {
-      const response = await fetch("http://localhost:3001/user-data", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        setUserData(data);
-      } else {
-        router.push("/login");
-      }
-    } catch (error: any) {
-      console.error("Error checking authentication:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
   useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/user-data", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          setUserData(data);
+        } else {
+          router.push("/login");
+        }
+      } catch (error: any) {
+        console.error("Error checking authentication:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
     checkAuth();
-  }, []);
+  }, [userData, router]);
 
   return (
     <UserContext.Provider

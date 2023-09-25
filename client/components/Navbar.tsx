@@ -1,7 +1,6 @@
 import { useUserContext } from "@/context/userContext";
 import { useRouter } from "next/navigation";
 import React from "react";
-import Loading from "./Loading";
 
 function Navbar() {
   const { userData, loading } = useUserContext();
@@ -16,7 +15,6 @@ function Navbar() {
         },
         credentials: "include",
       });
-      const data = await response.json();
       if (response.ok) {
         router.push("/login");
       }
@@ -24,15 +22,6 @@ function Navbar() {
       console.error(error);
     }
   };
-
-  if (loading) {
-    return <Loading />;
-  }
-
-  if (!userData && !loading) {
-    router.push("/login");
-    return null;
-  }
 
   return (
     <nav className="bg-black w-screen py-4 mb-1">
