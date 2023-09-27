@@ -1,6 +1,6 @@
-import { Request, Response } from "express";
+import { Request } from "express";
 
-export const getToken = async (req: Request, res: Response, token: string) => {
+export const getToken = async (req: Request, _: any, token: string) => {
   try {
     const { cookie } = req.headers;
 

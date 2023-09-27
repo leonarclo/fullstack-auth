@@ -10,8 +10,7 @@ export const authMiddleware = async (
   next: NextFunction
 ) => {
   try {
-    // const token = (await getToken(req, res, "token_session")) as string;
-    const token = req.cookies.token_session;
+    const token = (await getToken(req, res, "token_session")) as string;
 
     if (!token) {
       return res.status(401).json({ message: "Não autorizado!" });
