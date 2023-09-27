@@ -69,7 +69,9 @@ export class LoginController {
         success: true,
       });
     } catch (error: any) {
-      return res.status(500).json({ message: error });
+      return res
+        .status(500)
+        .json({ message: "Ocorreu um erro interno no servidor." });
     }
   }
 }

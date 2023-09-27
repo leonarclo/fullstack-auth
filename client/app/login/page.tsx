@@ -10,6 +10,7 @@ type Inputs = {
 
 function Login() {
   const router = useRouter();
+
   const {
     register,
     handleSubmit,

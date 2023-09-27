@@ -34,6 +34,7 @@ export const UserContext = createContext<IUserContext>({
 
 export const UserContextProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
+
   const [userData, setUserData] = useState<IUserData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -61,7 +62,7 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
       }
     };
     checkAuth();
-  }, [userData, router]);
+  }, [router, userData]);
 
   return (
     <UserContext.Provider

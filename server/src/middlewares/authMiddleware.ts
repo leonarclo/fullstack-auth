@@ -10,7 +10,8 @@ export const authMiddleware = async (
   next: NextFunction
 ) => {
   try {
-    const token = (await getToken(req, res, "token_session")) as string;
+    // const token = (await getToken(req, res, "token_session")) as string;
+    const token = req.cookies.token_session;
 
     if (!token) {
       return res.status(401).json({ message: "Não autorizado!" });
@@ -47,6 +48,8 @@ export const authMiddleware = async (
     req.userData = userData;
     next();
   } catch (error: any) {
-    return res.status(500).json(error);
+    return res
+      .status(500)
+      .json({ message: "Não autorizado! Token não encontrado!" });
   }
 };

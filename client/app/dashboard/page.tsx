@@ -1,8 +1,7 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
-import { useUserContext } from "@/context/userContext";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/Loading";
 import { useYoutubeApiContext } from "@/context/youtubeApi";
@@ -10,7 +9,6 @@ import Image from "next/image";
 
 function Dashboard() {
   const router = useRouter();
-  const { loading, userData } = useUserContext();
   const { loadingPlaylist, playlists } = useYoutubeApiContext();
   const [playlistTitle, setPlaylistTitle] = useState<string | null>(null);
 
@@ -18,13 +16,8 @@ function Dashboard() {
     setPlaylistTitle(title);
   };
 
-  if (loading || loadingPlaylist) {
+  if (loadingPlaylist) {
     return <Loading />;
-  }
-
-  if (!userData && !loading) {
-    router.push("/login");
-    return null;
   }
 
   return (

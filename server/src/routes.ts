@@ -23,7 +23,14 @@ routes.post(
 routes.post("/forget-password", new ForgetPasswordController().handle);
 routes.post("/login", new LoginController().handle);
 routes.get("/logout", new LogoutController().handle);
-routes.get("/api/youtube", new YoutubeApiController().handle);
+routes.get(
+  "/api/youtube/playlists",
+  new YoutubeApiController().handlePlaylistsName
+);
+routes.get(
+  "/api/youtube/videosPerPlaylist",
+  new YoutubeApiController().handleVideoPerPlaylist
+);
 routes.post("/payer-client", new PayerClientController().handle);
 routes.post("/register", new RegisterController().handle);
 routes.post("/reset-password", new ResetPasswordController().handle);

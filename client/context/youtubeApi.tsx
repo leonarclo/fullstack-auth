@@ -35,12 +35,15 @@ export const YoutubeApiContextProvider = ({
 
   const getPlaylistsData = async () => {
     try {
-      const response = await fetch("http://localhost:3001/api/youtube", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        "http://localhost:3001/api/youtube/playlists",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       const data = await response.json();
       if (response.ok) {
