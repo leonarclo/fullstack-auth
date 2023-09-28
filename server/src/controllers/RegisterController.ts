@@ -10,7 +10,6 @@ import { payerClientRepository } from "../repositories/payerClientRepository";
 export class RegisterController {
   async handle(req: Request, res: Response) {
     try {
-      console.log(req.body);
       const { name, email, password } = req.body;
 
       const user = await userRepository.findOneBy({ email });

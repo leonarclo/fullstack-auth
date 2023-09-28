@@ -59,7 +59,7 @@ export const YoutubeApiContextProvider = ({
   };
   useEffect(() => {
     getPlaylistsData();
-  }, []);
+  }, [playlists]);
 
   return (
     <YoutubeApiContext.Provider
