@@ -1,5 +1,5 @@
 "use client";
-import store from "@/redux/store";
+import { store } from "@/redux/store";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";

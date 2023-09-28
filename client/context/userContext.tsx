@@ -52,8 +52,6 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
         const data = await response.json();
         if (response.ok) {
           setUserData(data);
-        } else {
-          router.push("/login");
         }
       } catch (error: any) {
         console.error("Error checking authentication:", error);
@@ -62,7 +60,7 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
       }
     };
     checkAuth();
-  }, [router, userData]);
+  }, [userData]);
 
   return (
     <UserContext.Provider

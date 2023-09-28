@@ -11,15 +11,10 @@ export class LoginController {
   async handle(req: Request, res: Response) {
     try {
       const { email, password } = req.body;
-      const { cookie } = req.headers;
       const user = await userRepository.findOneBy({ email });
 
       if (!user) {
         return res.status(400).json({ message: "Email não encontrado!" });
-      }
-
-      if (cookie) {
-        res.clearCookie("token_session", { httpOnly: true });
       }
       const comparePassword = await bcrypt.compare(password, user.password);
 
@@ -50,7 +45,6 @@ export class LoginController {
           .status(200)
           .json({ message: "Logado com sucesso!", success: true });
       }
-      console.log(new Date(currentTimestamp - twentyFourHoursInMillis));
 
       const userToken = {
         id: user.id,

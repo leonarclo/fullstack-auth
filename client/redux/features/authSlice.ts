@@ -4,24 +4,15 @@ interface IUserData {
   name: string;
   email: string;
   image?: string;
-  token: string;
-  role?: string;
-  account_access_token?: string;
-  account_expires_at?: Date;
+  role: string;
 }
 
 interface IAuth {
-  userData: IUserData;
+  userData: IUserData | null;
 }
 
 const initialState: IAuth = {
-  userData: {
-    name: "",
-    email: "",
-    image: "",
-    token: "",
-    role: "",
-  },
+  userData: null,
 };
 
 export const authSlice = createSlice({
@@ -31,7 +22,9 @@ export const authSlice = createSlice({
     setCredentials: (state, action: PayloadAction<IUserData>) => {
       state.userData = action.payload;
     },
-    logOut: () => initialState,
+    logOut: () => {
+      return initialState;
+    },
   },
 });
 

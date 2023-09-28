@@ -1,4 +1,3 @@
-import { UserContextProvider } from "@/context/userContext";
 import { YoutubeApiContextProvider } from "@/context/youtubeApi";
 import type { Metadata } from "next";
 
@@ -14,9 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <div>
-      <UserContextProvider>
-        <YoutubeApiContextProvider>{children}</YoutubeApiContextProvider>
-      </UserContextProvider>
+      <YoutubeApiContextProvider>{children}</YoutubeApiContextProvider>
     </div>
   );
 }
