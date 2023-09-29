@@ -2,11 +2,7 @@
 import Link from "next/link";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useLoginMutation } from "@/redux/features/apiSlice";
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useGetUserQuery } from "@/redux/features/apiSlice";
-import { useDispatch } from "react-redux";
-import { setCredentials } from "@/redux/features/authSlice";
 
 type Inputs = {
   email: string;
@@ -15,22 +11,7 @@ type Inputs = {
 
 function Login() {
   const router = useRouter();
-
-  const [login, { data: dataLogin, isSuccess: isSuccessLogin }] =
-    useLoginMutation();
-  const {
-    data: dataUserData,
-    isSuccess: isSuccessUserData,
-    isLoading: isLoadingUserData,
-  } = useGetUserQuery("");
-  const dispatch = useDispatch();
-  dispatch(setCredentials(dataUserData));
-
-  useEffect(() => {
-    if (isSuccessLogin) {
-      router.push("/dashboard");
-    }
-  }, [router, isSuccessLogin, dataLogin]);
+  const [loginUser, { isLoading: isLoadingLogin }] = useLoginMutation();
 
   const {
     register,
@@ -39,28 +20,11 @@ function Login() {
   } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
-      await login(data);
-    } catch (error) {
-      console.log(error);
+      await loginUser(data).unwrap();
+      router.push("/dashboard");
+    } catch (error: any) {
+      alert(error.data.message || error.error);
     }
-    // try {
-    //   const response = await fetch("http://localhost:3001/login", {
-    //     method: "POST",
-    //     body: JSON.stringify(data),
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     credentials: "include",
-    //   });
-    //   const res = await response.json();
-    //   if (response.ok) {
-    //     router.push("/dashboard");
-    //   } else {
-    //     alert(res.message);
-    //   }
-    // } catch (error: any) {
-    //   console.error(error);
-    // }
   };
 
   return (
@@ -98,8 +62,9 @@ function Login() {
             <button
               type="submit"
               className="p-2 border border-white rounded hover:bg-white hover:text-black"
+              disabled={isLoadingLogin}
             >
-              Enviar
+              {isLoadingLogin ? "Entrando..." : "Enviar"}
             </button>
           </form>
           <div className="flex flex-col gap-4">

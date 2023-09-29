@@ -1,22 +1,33 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import Loading from "@/components/Loading";
 import { useYoutubeApiContext } from "@/context/youtubeApi";
 import Image from "next/image";
+import Loading from "@/components/Loading";
+import { useGetUserQuery } from "@/redux/features/apiSlice";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "@/redux/features/authSlice";
 
 function Dashboard() {
-  const router = useRouter();
+  const dispatch = useDispatch();
   const { loadingPlaylist, playlists } = useYoutubeApiContext();
   const [playlistTitle, setPlaylistTitle] = useState<string | null>(null);
+
+  const { data: dataUserData, isLoading: isLoadingUserData } =
+    useGetUserQuery("");
+
+  useEffect(() => {
+    if (dataUserData) {
+      dispatch(setCredentials(dataUserData));
+    }
+  }, [dataUserData, dispatch]);
 
   const handlePlaylistTitle = (title: string) => {
     setPlaylistTitle(title);
   };
 
-  if (loadingPlaylist) {
+  if (isLoadingUserData) {
     return <Loading />;
   }
 

@@ -1,4 +1,3 @@
-import { YoutubeApiContextProvider } from "@/context/youtubeApi";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -11,9 +10,5 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <div>
-      <YoutubeApiContextProvider>{children}</YoutubeApiContextProvider>
-    </div>
-  );
+  return <div>{children}</div>;
 }

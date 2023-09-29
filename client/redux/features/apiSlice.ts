@@ -18,6 +18,14 @@ export const apiSlice = createApi({
         };
       },
     }),
+    logOut: builder.mutation({
+      query: () => {
+        return {
+          url: "/logout",
+          method: "GET",
+        };
+      },
+    }),
     getUser: builder.query({
       query: () => {
         return {
@@ -29,4 +37,5 @@ export const apiSlice = createApi({
   }),
 });
 
-export const { useLoginMutation, useGetUserQuery } = apiSlice;
+export const { useLoginMutation, useGetUserQuery, useLogOutMutation } =
+  apiSlice;
