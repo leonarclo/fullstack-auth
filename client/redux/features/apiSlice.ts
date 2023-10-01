@@ -1,22 +1,26 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
-const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:3001",
-  credentials: "include",
-});
+import { IUserData, logOut, setCredentials } from "./authSlice";
+import customBaseQuery from "./customBaseQuery";
 
 export const apiSlice = createApi({
   reducerPath: "authApi",
-  baseQuery,
+  baseQuery: customBaseQuery,
   endpoints: (builder) => ({
     login: builder.mutation({
-      query: (data) => {
+      query(data) {
         return {
-          url: "/login",
+          url: "login",
           method: "POST",
           body: data,
+          credentials: "include",
         };
       },
+      // async onQueryStarted(args, { dispatch, queryFulfilled }) {
+      //   try {
+      //     await queryFulfilled;
+      //     await dispatch(setCredentials(null));
+      //   } catch (error) {}
+      // },
     }),
     logOut: builder.mutation({
       query: () => {
@@ -27,11 +31,14 @@ export const apiSlice = createApi({
       },
     }),
     getUser: builder.query({
-      query: () => {
-        return {
-          url: "/user-data",
-          method: "GET",
-        };
+      query: () => "user-data",
+      keepUnusedDataFor: 5,
+      transformResponse: (result: any) => result.data,
+      async onQueryStarted({ dispatch, queryFulfilled }) {
+        try {
+          const userData = await queryFulfilled;
+          dispatch(setCredentials(userData));
+        } catch (error) {}
       },
     }),
   }),

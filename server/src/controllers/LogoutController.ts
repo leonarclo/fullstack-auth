@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 
 export class LogoutController {
-  async handle(req: Request, res: Response) {
+  async handle(res: Response) {
     try {
       res.clearCookie("token_session", { httpOnly: true });
       return res.status(200).json({ message: "Logout Successful" });

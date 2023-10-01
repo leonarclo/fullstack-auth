@@ -3,6 +3,9 @@ import Link from "next/link";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useLoginMutation } from "@/redux/features/apiSlice";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "@/redux/features/authSlice";
+import { useEffect } from "react";
 
 type Inputs = {
   email: string;
@@ -11,7 +14,9 @@ type Inputs = {
 
 function Login() {
   const router = useRouter();
-  const [loginUser, { isLoading: isLoadingLogin }] = useLoginMutation();
+  const dispatch = useDispatch();
+  const [loginUser, { isLoading, isError, error, isSuccess }] =
+    useLoginMutation();
 
   const {
     register,
@@ -20,7 +25,8 @@ function Login() {
   } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
-      await loginUser(data).unwrap();
+      const result = await loginUser(data).unwrap();
+      dispatch(setCredentials(result.userData));
       router.push("/dashboard");
     } catch (error: any) {
       alert(error.data.message || error.error);
@@ -62,9 +68,9 @@ function Login() {
             <button
               type="submit"
               className="p-2 border border-white rounded hover:bg-white hover:text-black"
-              disabled={isLoadingLogin}
+              disabled={isLoading}
             >
-              {isLoadingLogin ? "Entrando..." : "Enviar"}
+              {isLoading ? "Entrando..." : "Enviar"}
             </button>
           </form>
           <div className="flex flex-col gap-4">

@@ -12,10 +12,6 @@ export const authMiddleware = async (
   try {
     const token = (await getToken(req, res, "token_session")) as string;
 
-    if (!token) {
-      return res.status(401).json({ message: "Não autorizado!" });
-    }
-
     const decodedToken: any = jwt.verify(token, process.env.JWT_KEY!);
 
     const user = await userRepository.findOneBy({ id: decodedToken.id });

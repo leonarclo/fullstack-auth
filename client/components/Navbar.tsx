@@ -26,7 +26,7 @@ function Navbar() {
   return (
     <nav className="bg-black w-screen py-4 mb-1">
       <div className="container mx-auto flex items-center justify-between">
-        {userData ? (
+        {userData?.accessToken ? (
           <>
             <h1 className="text-slate-50">{`Bem-Vindo(a), ${userData?.name}!`}</h1>
             {userData?.role === "ADMIN" && (
