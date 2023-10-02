@@ -10,9 +10,21 @@ export const authMiddleware = async (
   next: NextFunction
 ) => {
   try {
-    const token = (await getToken(req, res, "token_session")) as string;
+    let access_token;
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer")
+    ) {
+      access_token = req.headers.authorization.split(" ")[1];
+    } else if (req.cookies.access_token) {
+      access_token = req.cookies.access_token;
+    }
 
-    const decodedToken: any = jwt.verify(token, process.env.JWT_KEY!);
+    if (!access_token) {
+      return res.status(403).json({ message: "Não logado!" });
+    }
+
+    const decodedToken: any = jwt.verify(access_token, process.env.JWT_KEY!);
 
     const user = await userRepository.findOneBy({ id: decodedToken.id });
 
@@ -34,7 +46,7 @@ export const authMiddleware = async (
       name: user.name,
       email: user.email,
       image: user.image,
-      token: token,
+      token: access_token,
       role: account.role,
     };
 

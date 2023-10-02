@@ -6,7 +6,6 @@ import {
   fetchBaseQuery,
 } from "@reduxjs/toolkit/query/react";
 import { logOut, setCredentials } from "./authSlice";
-import customBaseQuery from "./customBaseQuery";
 import { RootState } from "../store";
 
 const baseQuery = fetchBaseQuery({
@@ -68,22 +67,6 @@ export const apiSlice = createApi({
           url: "/logout",
           method: "GET",
         };
-      },
-    }),
-    refresh: builder.mutation({
-      query: () => ({
-        url: "/refresh",
-        method: "GET",
-      }),
-      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-        try {
-          const data = await queryFulfilled;
-          console.log(data);
-          console.log(data.accessToken);
-          dispatch(setCredentials(data.accessToken));
-        } catch (error) {
-          console.log(error);
-        }
       },
     }),
     getUser: builder.query({
