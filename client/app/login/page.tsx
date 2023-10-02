@@ -15,8 +15,7 @@ type Inputs = {
 function Login() {
   const router = useRouter();
   const dispatch = useDispatch();
-  const [loginUser, { isLoading, isError, error, isSuccess }] =
-    useLoginMutation();
+  const [loginUser, { data: loginData, isLoading, error }] = useLoginMutation();
 
   const {
     register,
@@ -25,11 +24,12 @@ function Login() {
   } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
-      const result = await loginUser(data).unwrap();
-      dispatch(setCredentials(result.userData));
+      await loginUser(data).unwrap();
+      dispatch(setCredentials(loginData));
+      console.log(loginData);
       router.push("/dashboard");
-    } catch (error: any) {
-      alert(error.data.message || error.error);
+    } catch (err: any) {
+      alert(error);
     }
   };
 

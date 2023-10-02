@@ -49,8 +49,20 @@ export class LoginController {
       //     .json({ message: "Logado com sucesso!", success: true });
       // }
 
+      const account = await accountRepository.findOne({
+        where: { userId: user.id },
+      });
+
+      if (!account) {
+        return res
+          .status(401)
+          .json({ message: "Cadastro de usuário não encontrado!" });
+      }
+
       const userToken = {
+        id: user.id,
         name: user.name,
+        role: account.role,
       };
 
       const accessToken = jwt.sign(userToken, process.env.JWT_KEY!, {
@@ -65,50 +77,39 @@ export class LoginController {
         }
       );
 
-      let refreshTokenExist = (await getToken(
-        req,
-        res,
-        "token_session"
-      )) as string;
+      let refreshTokenArray = (await getToken(req, res, "refresh_token"))
+        ? account.refresh_token
+        : account.refresh_token?.filter(
+            async (x) => x !== (await getToken(req, res, "refresh_token"))
+          );
 
-      const account = await accountRepository.findOne({
-        where: { userId: user.id },
-      });
-
-      if (!account) {
-        return res.status(401).json({ message: "Conta não encontrada!" });
-      }
-
-      let refreshTokenArray: string[] | undefined = [];
-      if (!refreshTokenExist) {
-        refreshTokenArray = account.refresh_token as [];
-      }
-      refreshTokenArray =
-        account.refresh_token?.filter((x) => x !== refreshTokenExist) || [];
-
-      if (refreshTokenExist) {
-        const refreshToken = newRefreshToken;
+      if (await getToken(req, res, "refresh_token")) {
+        const refreshToken = await getToken(req, res, "refresh_token");
         const foundToken = await accountRepository.findOne({
-          where: { refresh_token: refreshToken },
+          where: {
+            refresh_token: refreshToken as string,
+          },
         });
 
         if (!foundToken) {
+          console.log("Refresh token reuse!");
           refreshTokenArray = [];
         }
 
-        res.clearCookie("token_session", {
+        res.clearCookie("refresh_token", {
           httpOnly: true,
           sameSite: "none",
           secure: true,
         });
       }
 
-      if (newRefreshToken) {
-        refreshTokenArray.push(newRefreshToken);
-      }
-
-      account.refresh_token = refreshTokenArray;
-      accountRepository.save;
+      refreshTokenArray?.push(newRefreshToken);
+      await accountRepository.update(
+        { userId: user.id },
+        { refresh_token: refreshTokenArray }
+      );
+      const result = accountRepository.save;
+      console.log(result);
 
       res.cookie("token_session", newRefreshToken, {
         httpOnly: true,
@@ -117,17 +118,9 @@ export class LoginController {
         maxAge: 24 * 60 * 60 * 1000,
       });
 
-      const userData = {
-        name: user.name,
-        email: user.email,
-        image: user.image,
-        role: account.role,
-        accessToken,
-      };
-
       return res.status(200).json({
         message: "Logado com sucesso!",
-        userData,
+        accessToken,
         success: true,
       });
     } catch (error: any) {
