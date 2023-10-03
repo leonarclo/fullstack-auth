@@ -34,7 +34,7 @@ export class RefreshTokenController {
               return res.sendStatus(403);
             }
             const hackedUser = await userRepository.findOne({
-              where: { name: decoded.name },
+              where: { id: decoded.id },
             });
             if (hackedUser) {
               await accountRepository.update(
@@ -72,7 +72,7 @@ export class RefreshTokenController {
           }
 
           const foundUser = await userRepository.findOne({
-            where: { name: decoded.name },
+            where: { id: decoded.id },
           });
 
           if (err || foundUser) {
@@ -92,7 +92,7 @@ export class RefreshTokenController {
             userToken.user,
             process.env.JWT_REFRESH_KEY!,
             {
-              expiresIn: "1h",
+              expiresIn: "30s",
             }
           );
 
@@ -114,9 +114,9 @@ export class RefreshTokenController {
         }
       );
     } catch (error: any) {
-      return res
-        .status(500)
-        .json({ message: "Ocorreu um erro interno no servidor." });
+      return res.status(500).json({
+        message: `A tentativa de login não foi bem sucedida: ${error}`,
+      });
     }
   }
 }

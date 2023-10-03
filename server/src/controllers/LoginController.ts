@@ -43,18 +43,18 @@ export class LoginController {
       };
 
       const accessToken = jwt.sign(accessTokenPayload, process.env.JWT_KEY!, {
-        expiresIn: "10m",
+        expiresIn: "10s",
       });
 
       const refreshTokenPayload = {
-        name: user.name,
+        name: user.id,
       };
 
       const newRefreshToken = jwt.sign(
         refreshTokenPayload,
         process.env.JWT_REFRESH_KEY!,
         {
-          expiresIn: "1h",
+          expiresIn: "30s",
         }
       );
 

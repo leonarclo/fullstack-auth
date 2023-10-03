@@ -2,7 +2,6 @@ import { userRepository } from "../repositories/userRespository";
 import jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import { accountRepository } from "../repositories/accountReposiroty";
-import { getToken } from "../utils/getToken";
 
 export const authMiddleware = async (
   req: Request,
@@ -10,48 +9,46 @@ export const authMiddleware = async (
   next: NextFunction
 ) => {
   try {
-    let access_token;
-    if (
+    const authHeader =
       req.headers.authorization &&
-      req.headers.authorization.startsWith("Bearer")
-    ) {
-      access_token = req.headers.authorization.split(" ")[1];
-    } else if (req.cookies.access_token) {
-      access_token = req.cookies.access_token;
+      req.headers.authorization.startsWith("Bearer");
+
+    if (!authHeader) {
+      return res.status(401).json({
+        message:
+          "Não foi possível receber o cabeçalh com o token de autorização!",
+      });
     }
 
-    if (!access_token) {
-      return res.status(403).json({ message: "Não logado!" });
+    const token = req.headers.authorization?.split(" ")[1];
+
+    if (!token) {
+      return res
+        .status(403)
+        .json({ message: "Ocorreu um erro ao receber o token de acesso!" });
     }
+    console.log(token);
 
-    const decodedToken: any = jwt.verify(access_token, process.env.JWT_KEY!);
+    jwt.verify(token, process.env.JWT_KEY!, async (err: any, decoded: any) => {
+      if (err) {
+        return res.status(403).json({ message: "Token inválido!" });
+      }
 
-    const user = await userRepository.findOneBy({ id: decodedToken.id });
+      const user = await userRepository.findOne({ where: { id: decoded.id } });
+      const account = await accountRepository.findOne({
+        where: { userId: user?.id },
+      });
 
-    if (!user) {
-      return res.status(401).json({ message: "Não autorizado!" });
-    }
+      const userData = {
+        user: user?.name,
+        email: user?.email,
+        image: user?.image,
+        role: account?.role,
+      };
 
-    const account = await accountRepository.findOne({
-      where: {
-        userId: user.id,
-      },
+      (req as any).userData = userData;
+      next();
     });
-
-    if (!account) {
-      return res.status(401).json({ message: "Não autorizado!" });
-    }
-
-    const userData = {
-      name: user.name,
-      email: user.email,
-      image: user.image,
-      token: access_token,
-      role: account.role,
-    };
-
-    (req as any).userData = userData;
-    next();
   } catch (error: any) {
     return res
       .status(500)
