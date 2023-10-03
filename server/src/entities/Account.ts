@@ -30,8 +30,8 @@ export class Account {
   @Column({ type: "enum", enum: Role, default: Role.FREE })
   role: Role;
 
-  @Column({ type: "simple-array", nullable: true })
-  refresh_token: string[] | null;
+  @Column("simple-array", { nullable: true })
+  refresh_token: string[];
 
   @Column({ type: "text", nullable: true })
   access_token: string | null;

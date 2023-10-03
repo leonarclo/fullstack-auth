@@ -9,124 +9,127 @@ export class LoginController {
   async handle(req: Request, res: Response) {
     try {
       const { email, password } = req.body;
+
       if (!email || !password) {
         return res
           .status(400)
-          .json({ message: "Email e senha são obrigatórios para login!" });
+          .json({ message: "Email and password are required for login." });
       }
+
       const user = await userRepository.findOneBy({ email });
 
       if (!user) {
-        return res.status(401).json({ message: "Email não encontrado!" });
+        return res.status(401).json({ message: "Email not found." });
       }
+
       const comparePassword = await bcrypt.compare(password, user.password);
 
       if (!comparePassword) {
-        return res.status(400).json({ message: "Senha incorreta!" });
+        return res.status(400).json({ message: "Incorrect password." });
       }
-
-      // const currentTimestamp = new Date().getTime();
-      // const twentyFourHoursInMillis = 24 * 60 * 60 * 1000;
-
-      // const tokenExist = await tokenRepository.findOne({
-      //   where: {
-      //     identifier: user.id,
-      //     expires_at: MoreThan(new Date()),
-      //     token_type: TokenType.VERIFY_EMAIL,
-      //   },
-      // });
-
-      // if (
-      //   user.verified_email == undefined &&
-      //   (!tokenExist ||
-      //     tokenExist?.expires_at <=
-      //       new Date(currentTimestamp - twentyFourHoursInMillis))
-      // ) {
-      //   const userId = user.id;
-      //   await sendEmail({ email, type: TokenType.VERIFY_EMAIL, userId });
-      //   return res
-      //     .status(200)
-      //     .json({ message: "Logado com sucesso!", success: true });
-      // }
 
       const account = await accountRepository.findOne({
         where: { userId: user.id },
       });
 
       if (!account) {
-        return res
-          .status(401)
-          .json({ message: "Cadastro de usuário não encontrado!" });
+        return res.status(401).json({ message: "User not registered." });
       }
 
-      const userToken = {
+      const accessTokenPayload = {
         id: user.id,
         name: user.name,
         role: account.role,
       };
 
-      const accessToken = jwt.sign(userToken, process.env.JWT_KEY!, {
-        expiresIn: "10s",
+      const accessToken = jwt.sign(accessTokenPayload, process.env.JWT_KEY!, {
+        expiresIn: "10m",
       });
 
+      const refreshTokenPayload = {
+        name: user.name,
+      };
+
       const newRefreshToken = jwt.sign(
-        userToken,
+        refreshTokenPayload,
         process.env.JWT_REFRESH_KEY!,
         {
-          expiresIn: "1m",
+          expiresIn: "1h",
         }
       );
 
-      let refreshTokenArray = (await getToken(req, res, "refresh_token"))
-        ? account.refresh_token
-        : account.refresh_token?.filter(
-            async (x) => x !== (await getToken(req, res, "refresh_token"))
-          );
+      let newRefreshTokenArray: string[] = [];
 
-      if (await getToken(req, res, "refresh_token")) {
-        const refreshToken = await getToken(req, res, "refresh_token");
+      if (req.cookies?.jwt) {
+        const refreshToken = req.cookies.jwt;
         const foundToken = await accountRepository.findOne({
-          where: {
-            refresh_token: refreshToken as string,
-          },
+          where: { refresh_token: refreshToken },
         });
 
+        // Detected refresh token reuse!
         if (!foundToken) {
-          console.log("Refresh token reuse!");
-          refreshTokenArray = [];
+          console.log("Attempted token reuse for login!");
+        } else {
+          newRefreshTokenArray = account.refresh_token.filter(
+            (rt) => rt !== refreshToken
+          );
         }
 
-        res.clearCookie("refresh_token", {
+        res.clearCookie("jwt", {
           httpOnly: true,
           sameSite: "none",
           secure: true,
         });
       }
 
-      refreshTokenArray?.push(newRefreshToken);
+      newRefreshTokenArray.push(newRefreshToken);
       await accountRepository.update(
         { userId: user.id },
-        { refresh_token: refreshTokenArray }
+        { refresh_token: newRefreshTokenArray }
       );
-      const result = accountRepository.save;
-      console.log(result);
 
-      res.cookie("token_session", newRefreshToken, {
+      res.cookie("jwt", newRefreshToken, {
         httpOnly: true,
         secure: true,
         sameSite: "none",
-        maxAge: 24 * 60 * 60 * 1000,
+        maxAge: 3600000, // 1h
       });
 
       return res.status(200).json({
-        message: "Logado com sucesso!",
         accessToken,
+        role: account.role,
+        message: "Login successful!",
         success: true,
       });
-    } catch (error: any) {
+    } catch (error) {
+      console.error("An internal server error occurred:", error);
       return res
         .status(500)
-        .json({ message: "Ocorreu um erro interno no servidor." });
+        .json({ message: "An internal server error occurred." });
     }
   }
 }
+
+// const currentTimestamp = new Date().getTime();
+// const twentyFourHoursInMillis = 24 * 60 * 60 * 1000;
+
+// const tokenExist = await tokenRepository.findOne({
+//   where: {
+//     identifier: user.id,
+//     expires_at: MoreThan(new Date()),
+//     token_type: TokenType.VERIFY_EMAIL,
+//   },
+// });
+
+// if (
+//   user.verified_email == undefined &&
+//   (!tokenExist ||
+//     tokenExist?.expires_at <=
+//       new Date(currentTimestamp - twentyFourHoursInMillis))
+// ) {
+//   const userId = user.id;
+//   await sendEmail({ email, type: TokenType.VERIFY_EMAIL, userId });
+//   return res
+//     .status(200)
+//     .json({ message: "Logado com sucesso!", success: true });
+// }

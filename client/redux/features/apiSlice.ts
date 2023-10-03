@@ -27,8 +27,7 @@ const baseQueryWithReauth: BaseQueryFn<
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
-  if (result.error && result.error.status === 403) {
-    // try to get a new token
+  if (result.error?.status === 403) {
     const refreshResult = await baseQuery("/refresh", api, extraOptions);
     console.log("refresh result: ", refreshResult);
     if (refreshResult.data) {
@@ -55,9 +54,9 @@ export const apiSlice = createApi({
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (data) => ({
-        url: "login",
+        url: "/login",
         method: "POST",
-        body: { ...data },
+        body: data,
         credentials: "include",
       }),
     }),
@@ -70,7 +69,7 @@ export const apiSlice = createApi({
       },
     }),
     getUser: builder.query({
-      query: () => "user-data",
+      query: () => "/user-data",
       keepUnusedDataFor: 5,
       transformResponse: (result: any) => result.data,
       async onQueryStarted({ dispatch, queryFulfilled }) {
