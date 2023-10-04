@@ -1,19 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-// export interface IUserData {
-//   name: string;
-//   email: string;
-//   image?: string;
-//   role: string;
-//   accessToken: string;
-// }
-
-interface IAuth {
-  user: string | null;
-  accessToken: string | null;
+export interface IUserData {
+  name?: string;
+  email?: string;
+  image?: string;
+  role?: string;
+  accessToken?: string;
 }
+
 interface authData {
-  authData: IAuth | null;
+  authData: IUserData | null;
 }
 
 const initialState: authData = {
@@ -24,7 +20,7 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setCredentials: (state, action: PayloadAction<IAuth>) => {
+    setCredentials: (state, action: PayloadAction<IUserData>) => {
       state.authData = action.payload;
     },
     logOut: () => {

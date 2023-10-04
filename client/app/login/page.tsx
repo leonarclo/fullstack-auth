@@ -5,7 +5,6 @@ import { useLoginMutation } from "@/redux/features/apiSlice";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "@/redux/features/authSlice";
-import { useEffect } from "react";
 
 type Inputs = {
   email: string;
@@ -25,7 +24,7 @@ function Login() {
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
       const result = await loginUser(data).unwrap();
-      dispatch(setCredentials({ ...result, data }));
+      dispatch(setCredentials({ ...result.userData }));
       if (result) {
         console.log(result);
       } else {

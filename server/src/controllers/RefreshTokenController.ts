@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { getToken } from "../utils/getToken";
 import { accountRepository } from "../repositories/accountReposiroty";
 import jwt from "jsonwebtoken";
 import { userRepository } from "../repositories/userRespository";
@@ -85,14 +84,14 @@ export class RefreshTokenController {
           };
 
           const accessToken = jwt.sign(userToken, process.env.JWT_KEY!, {
-            expiresIn: "10s",
+            expiresIn: "5s",
           });
 
           const newRefreshToken = jwt.sign(
             userToken.user,
             process.env.JWT_REFRESH_KEY!,
             {
-              expiresIn: "30s",
+              expiresIn: "10s",
             }
           );
 
@@ -106,11 +105,22 @@ export class RefreshTokenController {
             httpOnly: true,
             secure: true,
             sameSite: "none",
-            maxAge: 3600000, // 1h
+            maxAge: 6000, // 10min
           });
 
-          const role = account?.role;
-          res.json({ role, accessToken });
+          const user = await userRepository.findOne({
+            where: { id: account?.userId },
+          });
+
+          const userData = {
+            name: user?.name,
+            email: user?.email,
+            image: user?.image,
+            role: account?.role,
+            accessToken,
+          };
+
+          res.json(userData);
         }
       );
     } catch (error: any) {

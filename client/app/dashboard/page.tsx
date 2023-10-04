@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useYoutubeApiContext } from "@/context/youtubeApi";
 import Image from "next/image";
 import Loading from "@/components/Loading";
-import { useGetUserQuery } from "@/redux/features/apiSlice";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "@/redux/features/authSlice";
 
@@ -14,22 +13,9 @@ function Dashboard() {
   const { loadingPlaylist, playlists } = useYoutubeApiContext();
   const [playlistTitle, setPlaylistTitle] = useState<string | null>(null);
 
-  const { data: dataUserData, isLoading: isLoadingUserData } =
-    useGetUserQuery("");
-
-  useEffect(() => {
-    if (dataUserData) {
-      dispatch(setCredentials(dataUserData));
-    }
-  }, [dataUserData, dispatch]);
-
   const handlePlaylistTitle = (title: string) => {
     setPlaylistTitle(title);
   };
-
-  if (isLoadingUserData) {
-    return <Loading />;
-  }
 
   return (
     <div className="h-screen flex flex-col">

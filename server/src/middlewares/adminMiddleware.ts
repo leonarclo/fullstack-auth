@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import { accountRepository } from "../repositories/accountReposiroty";
 import { Role } from "../entities/Account";
-import { getToken } from "../utils/getToken";
 
 export const adminMiddleware = async (
   req: Request,
@@ -11,11 +10,18 @@ export const adminMiddleware = async (
   next: NextFunction
 ) => {
   try {
-    const token = (await getToken(req, res, "token_session")) as string;
+    const authHeader =
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer");
 
-    if (!token) {
-      return res.status(401).json({ message: "Não autorizado!" });
+    if (!authHeader) {
+      return res.status(401).json({
+        message:
+          "Não foi possível receber o cabeçalh com o token de autorização!",
+      });
     }
+
+    const token = req.headers.authorization?.split(" ")[1] as string;
 
     const decodedToken: any = jwt.verify(token, process.env.JWT_KEY!);
 

@@ -33,11 +33,11 @@ routes.get(
   new YoutubeApiController().handleVideoPerPlaylist
 );
 routes.post("/payer-client", new PayerClientController().handle);
-routes.post("/register", new RegisterController().handle);
+routes.post("/register-user", new RegisterController().handle);
 routes.post("/reset-password", new ResetPasswordController().handle);
 routes.get("/user-data", authMiddleware, new UserDataController().handle);
 routes.post("/verify-email", new VerifyEmailController().handle);
 routes.post("/access-token", new AccessTokenController().handle);
-routes.post("/refresh", new RefreshTokenController().handle);
+routes.post("/refresh", authMiddleware, new RefreshTokenController().handle);
 
 export default routes;

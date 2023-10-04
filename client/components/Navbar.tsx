@@ -1,5 +1,5 @@
-import { useGetUserQuery, useLogOutMutation } from "@/redux/features/apiSlice";
-import { logOut, setCredentials } from "@/redux/features/authSlice";
+import { useLogOutMutation } from "@/redux/features/apiSlice";
+import { logOut } from "@/redux/features/authSlice";
 import { useAppSelector } from "@/redux/store";
 import { useRouter } from "next/navigation";
 
@@ -11,7 +11,7 @@ function Navbar() {
   const dispatch = useDispatch();
   const [LogoutUser] = useLogOutMutation();
 
-  const userData = useAppSelector((state) => state.auth.authData);
+  const userData = useAppSelector((state) => state.auth.auth);
 
   const handlerLogOut = async () => {
     try {
@@ -23,15 +23,13 @@ function Navbar() {
     }
   };
 
-  console.log(userData);
-
   return (
     <nav className="bg-black w-screen py-4 mb-1">
       <div className="container mx-auto flex items-center justify-between">
-        {userData?.accessToken ? (
+        {userData?.authData?.accessToken ? (
           <>
-            <h1 className="text-slate-50">{`Bem-Vindo(a), ${userData?.data.email}!`}</h1>
-            {userData?.role === "ADMIN" && (
+            <h1 className="text-slate-50">{`Bem-Vindo(a), ${userData?.authData.name}!`}</h1>
+            {userData?.authData.role === "ADMIN" && (
               <button
                 className="text-slate-50 py-2 px-6 border rounded"
                 onClick={() => router.push("/create-account")}

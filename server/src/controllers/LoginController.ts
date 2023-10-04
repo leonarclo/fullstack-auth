@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { userRepository } from "../repositories/userRespository";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { getToken } from "../utils/getToken";
 import { accountRepository } from "../repositories/accountReposiroty";
 
 export class LoginController {
@@ -43,7 +42,7 @@ export class LoginController {
       };
 
       const accessToken = jwt.sign(accessTokenPayload, process.env.JWT_KEY!, {
-        expiresIn: "10s",
+        expiresIn: "5s",
       });
 
       const refreshTokenPayload = {
@@ -54,7 +53,7 @@ export class LoginController {
         refreshTokenPayload,
         process.env.JWT_REFRESH_KEY!,
         {
-          expiresIn: "30s",
+          expiresIn: "10s",
         }
       );
 
@@ -92,12 +91,19 @@ export class LoginController {
         httpOnly: true,
         secure: true,
         sameSite: "none",
-        maxAge: 3600000, // 1h
+        maxAge: 6000, // 1min
       });
 
-      return res.status(200).json({
-        accessToken,
+      const userData = {
+        name: user.name,
+        email: user.email,
+        image: user.image,
         role: account.role,
+        accessToken,
+      };
+
+      return res.status(200).json({
+        userData,
         message: "Login successful!",
         success: true,
       });

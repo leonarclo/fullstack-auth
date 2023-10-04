@@ -21,27 +21,27 @@ function Register() {
   } = useForm<Inputs>();
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    // try {
-    //   setLoading(true);
-    //   const response = await fetch("http://localhost:3001/register", {
-    //     method: "POST",
-    //     body: JSON.stringify(data),
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //   });
-    //   const res = await response.json();
-    //   if (response.ok) {
-    //     alert(res.message);
-    //     router.push("/login");
-    //   } else {
-    //     alert(res.message);
-    //   }
-    // } catch (error: any) {
-    //   console.error(error);
-    // } finally {
-    //   setLoading(false);
-    // }
+    try {
+      setLoading(true);
+      const response = await fetch("http://localhost:3001/register", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const res = await response.json();
+      if (response.ok) {
+        alert(res.message);
+        router.push("/login");
+      } else {
+        alert(res.message);
+      }
+    } catch (error: any) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (loading) {
