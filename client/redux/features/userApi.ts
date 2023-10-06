@@ -11,12 +11,11 @@ import { RootState } from "../store";
 const baseQuery = fetchBaseQuery({
   baseUrl: "http://localhost:3001",
   credentials: "include",
-  prepareHeaders: (headers, { getState }) => {
-    const token = (getState() as RootState).auth.auth.authData?.accessToken;
-
-    // Se existe um token no state, ele será passado aqui
-    if (token) {
-      headers.set("authorization", `Bearer ${token}`);
+  prepareHeaders: async (headers, { getState }) => {
+    const accessToken = (getState() as RootState).persistedReducer.auth.authData
+      ?.accessToken;
+    if (accessToken) {
+      headers.set("authorization", `Bearer ${accessToken}`);
     }
     return headers;
   },
@@ -32,14 +31,15 @@ const baseQueryWithReauth: BaseQueryFn<
     const refreshResult = await baseQuery("/refresh", api, extraOptions);
     console.log("refresh result: ", refreshResult);
     if (refreshResult.data) {
-      const user = (api.getState() as RootState).auth.auth;
+      const user = (api.getState() as RootState).persistedReducer.auth;
       const authData = {
         ...user,
         accessToken: JSON.stringify(refreshResult.data),
       };
       console.log(`REFRESH: ${authData}`);
-      // store the new token
+
       api.dispatch(setCredentials(authData));
+
       // retry the initial query
       result = await baseQuery(args, api, extraOptions);
     } else {
@@ -70,17 +70,6 @@ export const apiSlice = createApi({
         };
       },
     }),
-    // getUser: builder.query({
-    //   query: () => "/user-data",
-    //   keepUnusedDataFor: 5,
-    //   transformResponse: (result: IUserData) => result,
-    //   async onQueryStarted({ dispatch, queryFulfilled }) {
-    //     try {
-    //       const userData = await queryFulfilled;
-    //       dispatch(setCredentials(userData));
-    //     } catch (error) {}
-    //   },
-    // }),
   }),
 });
 

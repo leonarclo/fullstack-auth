@@ -1,4 +1,4 @@
-import { useLogOutMutation } from "@/redux/features/apiSlice";
+import { useLogOutMutation } from "@/redux/features/userApi";
 import { logOut } from "@/redux/features/authSlice";
 import { useAppSelector } from "@/redux/store";
 import { useRouter } from "next/navigation";
@@ -11,7 +11,7 @@ function Navbar() {
   const dispatch = useDispatch();
   const [LogoutUser] = useLogOutMutation();
 
-  const userData = useAppSelector((state) => state.auth.auth);
+  const userData = useAppSelector((state) => state.persistedReducer.auth);
 
   const handlerLogOut = async () => {
     try {

@@ -6,6 +6,7 @@ import { Inter } from "next/font/google";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import Loading from "@/components/Loading";
+import ToastProvider from "@/components/ToastProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -26,11 +27,13 @@ export default function RootLayout({
   return (
     <html lang="pt-br">
       <body className={inter.className}>
-        <Provider store={store}>
-          <PersistGate loading={<Loading />} persistor={persistor}>
-            {children}
-          </PersistGate>
-        </Provider>
+        <ToastProvider>
+          <Provider store={store}>
+            <PersistGate loading={<Loading />} persistor={persistor}>
+              {children}
+            </PersistGate>
+          </Provider>
+        </ToastProvider>
       </body>
     </html>
   );

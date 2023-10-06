@@ -84,14 +84,14 @@ export class RefreshTokenController {
           };
 
           const accessToken = jwt.sign(userToken, process.env.JWT_KEY!, {
-            expiresIn: "5s",
+            expiresIn: "30s",
           });
 
           const newRefreshToken = jwt.sign(
             userToken.user,
             process.env.JWT_REFRESH_KEY!,
             {
-              expiresIn: "10s",
+              expiresIn: "2m",
             }
           );
 
@@ -105,7 +105,7 @@ export class RefreshTokenController {
             httpOnly: true,
             secure: true,
             sameSite: "none",
-            maxAge: 6000, // 10min
+            maxAge: 120000, // 10min
           });
 
           const user = await userRepository.findOne({
@@ -114,7 +114,6 @@ export class RefreshTokenController {
 
           const userData = {
             name: user?.name,
-            email: user?.email,
             image: user?.image,
             role: account?.role,
             accessToken,

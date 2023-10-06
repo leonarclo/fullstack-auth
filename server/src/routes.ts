@@ -2,7 +2,6 @@ import { Router } from "express";
 import { RegisterController } from "./controllers/RegisterController";
 import { LoginController } from "./controllers/LoginController";
 import { authMiddleware } from "./middlewares/authMiddleware";
-import { UserDataController } from "./controllers/UserDataController";
 import { LogoutController } from "./controllers/LogoutController";
 import { PayerClientController } from "./controllers/PayerClientController";
 import { ForgetPasswordController } from "./controllers/ForgetPasswordController";
@@ -35,9 +34,8 @@ routes.get(
 routes.post("/payer-client", new PayerClientController().handle);
 routes.post("/register-user", new RegisterController().handle);
 routes.post("/reset-password", new ResetPasswordController().handle);
-routes.get("/user-data", authMiddleware, new UserDataController().handle);
 routes.post("/verify-email", new VerifyEmailController().handle);
 routes.post("/access-token", new AccessTokenController().handle);
-routes.post("/refresh", authMiddleware, new RefreshTokenController().handle);
+routes.get("/refresh", authMiddleware, new RefreshTokenController().handle);
 
 export default routes;

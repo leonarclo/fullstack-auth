@@ -1,10 +1,10 @@
 "use client";
 import Link from "next/link";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useLoginMutation } from "@/redux/features/apiSlice";
+import { useLoginMutation } from "@/redux/features/userApi";
 import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
-import { setCredentials } from "@/redux/features/authSlice";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
 
 type Inputs = {
   email: string;
@@ -13,8 +13,22 @@ type Inputs = {
 
 function Login() {
   const router = useRouter();
-  const dispatch = useDispatch();
-  const [loginUser, { isLoading, error }] = useLoginMutation();
+  const [loginUser, { isLoading, isError, error, isSuccess }] =
+    useLoginMutation();
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Logado com sucesso!", { position: "top-right" });
+      router.push("/dashboard");
+    }
+
+    if (isError) {
+      toast.error(error as any, {
+        position: "top-right",
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading]);
 
   const {
     register,
@@ -22,18 +36,7 @@ function Login() {
     formState: { errors },
   } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    try {
-      const result = await loginUser(data).unwrap();
-      dispatch(setCredentials({ ...result.userData }));
-      if (result) {
-        console.log(result);
-      } else {
-        console.log(result.message);
-      }
-      router.push("/dashboard");
-    } catch (err: any) {
-      alert(error);
-    }
+    loginUser(data);
   };
 
   return (

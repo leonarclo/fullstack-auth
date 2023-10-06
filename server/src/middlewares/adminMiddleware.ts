@@ -17,7 +17,7 @@ export const adminMiddleware = async (
     if (!authHeader) {
       return res.status(401).json({
         message:
-          "Não foi possível receber o cabeçalh com o token de autorização!",
+          "Não foi possível receber o cabeçalho com o token de autorização!",
       });
     }
 

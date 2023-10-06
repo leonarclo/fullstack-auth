@@ -35,29 +35,22 @@ export class LoginController {
         return res.status(401).json({ message: "User not registered." });
       }
 
-      const accessTokenPayload = {
+      const tokenPayload = {
         id: user.id,
-        name: user.name,
-        role: account.role,
       };
-
-      const accessToken = jwt.sign(accessTokenPayload, process.env.JWT_KEY!, {
-        expiresIn: "5s",
+      const accessToken = jwt.sign(tokenPayload, process.env.JWT_KEY!, {
+        expiresIn: "1m",
       });
 
-      const refreshTokenPayload = {
-        name: user.id,
-      };
-
-      const newRefreshToken = jwt.sign(
-        refreshTokenPayload,
+      const refreshToken = jwt.sign(
+        tokenPayload,
         process.env.JWT_REFRESH_KEY!,
         {
-          expiresIn: "10s",
+          expiresIn: "5m",
         }
       );
 
-      let newRefreshTokenArray: string[] = [];
+      let refreshTokenList: string[] = [];
 
       if (req.cookies?.jwt) {
         const refreshToken = req.cookies.jwt;
@@ -69,7 +62,7 @@ export class LoginController {
         if (!foundToken) {
           console.log("Attempted token reuse for login!");
         } else {
-          newRefreshTokenArray = account.refresh_token.filter(
+          refreshTokenList = account.refresh_token.filter(
             (rt) => rt !== refreshToken
           );
         }
@@ -81,29 +74,34 @@ export class LoginController {
         });
       }
 
-      newRefreshTokenArray.push(newRefreshToken);
+      refreshTokenList.push(refreshToken);
       await accountRepository.update(
         { userId: user.id },
-        { refresh_token: newRefreshTokenArray }
+        { refresh_token: refreshTokenList }
       );
+      accountRepository.save;
 
-      res.cookie("jwt", newRefreshToken, {
+      res.cookie("refresh_token", refreshToken, {
         httpOnly: true,
         secure: true,
         sameSite: "none",
-        maxAge: 6000, // 1min
+        maxAge: 300000, // 1min
+      });
+      res.cookie("access_token", accessToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: 60000, // 5min
+      });
+      res.cookie("logged_in", true, {
+        httpOnly: false,
+        secure: true,
+        sameSite: "none",
+        maxAge: 60000, // 1min
       });
 
-      const userData = {
-        name: user.name,
-        email: user.email,
-        image: user.image,
-        role: account.role,
-        accessToken,
-      };
-
       return res.status(200).json({
-        userData,
+        accessToken,
         message: "Login successful!",
         success: true,
       });
