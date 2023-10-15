@@ -1,5 +1,5 @@
 import { userRepository } from "../repositories/userRespository";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import { accountRepository } from "../repositories/accountReposiroty";
 
@@ -9,46 +9,46 @@ export const authMiddleware = async (
   next: NextFunction
 ) => {
   try {
-    const authHeader =
+    let access_token;
+
+    if (
       req.headers.authorization &&
-      req.headers.authorization.startsWith("Bearer");
-
-    if (!authHeader) {
-      return res.status(401).json({
-        message:
-          "Não foi possível receber o cabeçalh com o token de autorização!",
-      });
+      req.headers.authorization.startsWith("Bearer")
+    ) {
+      access_token = req.headers.authorization.split(" ")[1];
+    } else if (req.cookies.access_token) {
+      access_token = req.cookies.access_token;
     }
 
-    const token = req.headers.authorization?.split(" ")[1];
+    if (!access_token) {
+      return res.status(401).json({ message: "You are not logged in" });
+    }
 
-    if (!token) {
+    const decoded = jwt.verify(
+      access_token,
+      process.env.JWT_KEY!
+    ) as JwtPayload;
+
+    if (!decoded) {
       return res
-        .status(403)
-        .json({ message: "Ocorreu um erro ao receber o token de acesso!" });
+        .status(401)
+        .json({ message: "Token inválido ou usuário não existe!" });
     }
-    console.log(token);
 
-    jwt.verify(token, process.env.JWT_KEY!, async (err: any, decoded: any) => {
-      if (err) {
-        return res.status(403).json({ message: "Token inválido!" });
-      }
-
-      const user = await userRepository.findOne({ where: { id: decoded.id } });
-      const account = await accountRepository.findOne({
-        where: { userId: user?.id },
-      });
-
-      const userData = {
-        user: user?.name,
-        email: user?.email,
-        image: user?.image,
-        role: account?.role,
-      };
-
-      (req as any).userData = userData;
-      next();
+    const user = await userRepository.findOne({ where: { id: decoded.id } });
+    const account = await accountRepository.findOne({
+      where: { userId: user?.id },
     });
+
+    const userData = {
+      user: user?.name,
+      email: user?.email,
+      image: user?.image,
+      role: account?.role,
+    };
+
+    (req as any).userData = userData;
+    next();
   } catch (error: any) {
     return res
       .status(500)

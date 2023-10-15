@@ -6,7 +6,7 @@ import { useYoutubeApiContext } from "@/context/youtubeApi";
 import Image from "next/image";
 import Loading from "@/components/Loading";
 import { useDispatch } from "react-redux";
-import { setCredentials } from "@/redux/features/authSlice";
+import { setCredentials } from "@/redux/auth/slice";
 
 function Dashboard() {
   const dispatch = useDispatch();

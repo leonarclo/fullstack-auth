@@ -1,11 +1,9 @@
 "use client";
-import { persistor, store } from "@/redux/store";
+import { store } from "@/redux/store";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Provider } from "react-redux";
-import { PersistGate } from "redux-persist/integration/react";
-import Loading from "@/components/Loading";
 import ToastProvider from "@/components/ToastProvider";
 
 const inter = Inter({
@@ -28,11 +26,7 @@ export default function RootLayout({
     <html lang="pt-br">
       <body className={inter.className}>
         <ToastProvider>
-          <Provider store={store}>
-            <PersistGate loading={<Loading />} persistor={persistor}>
-              {children}
-            </PersistGate>
-          </Provider>
+          <Provider store={store}>{children}</Provider>
         </ToastProvider>
       </body>
     </html>

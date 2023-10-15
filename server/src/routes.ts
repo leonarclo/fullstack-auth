@@ -12,6 +12,7 @@ import { adminMiddleware } from "./middlewares/adminMiddleware";
 import { AccessTokenController } from "./controllers/AccessTokenController";
 import { YoutubeApiController } from "./controllers/YoutubeApiController";
 import { RefreshTokenController } from "./controllers/RefreshTokenController";
+import { UserDataController } from "./controllers/UserDataController";
 
 const routes = Router();
 
@@ -36,6 +37,7 @@ routes.post("/register-user", new RegisterController().handle);
 routes.post("/reset-password", new ResetPasswordController().handle);
 routes.post("/verify-email", new VerifyEmailController().handle);
 routes.post("/access-token", new AccessTokenController().handle);
-routes.get("/refresh", authMiddleware, new RefreshTokenController().handle);
+routes.get("/refresh", new RefreshTokenController().handle);
+routes.get("/user-data", authMiddleware, new UserDataController().handle);
 
 export default routes;

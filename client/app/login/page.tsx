@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useLoginMutation } from "@/redux/features/userApi";
+import { useLoginMutation } from "@/redux/auth/api";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
